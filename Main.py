@@ -5,6 +5,7 @@ Created on Mon Jun 20 20:25:30 2016
 @author: Rahul Patni
 """
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 # Data contains scores of 2 exams and also whether the individual with the score was admitted or not
 
@@ -27,14 +28,33 @@ def printArray(array):
         print i
     
 def plotData(X, y):
-    column1 = extractColummnFromMatrix(X, 0)
-    column2 = extractColummnFromMatrix(X, 1)
-    
+    exam1Data = extractColummnFromMatrix(X, 0)
+    exam2Data = extractColummnFromMatrix(X, 1)
+    accepted = []
+    rejected = []
+    for i in range(len(y)):
+        if (y[i][0] == 1):
+            accepted.append([exam1Data[i], exam2Data[i]])
+        else:
+            rejected.append([exam1Data[i], exam2Data[i]])
+    printArray(accepted)
+    plt.xlabel('Exam 1 Score')
+    plt.ylabel('Exam 2 Score')
+    plt.legend('accepted', 'rejected')
+
+    red_data = mpatches.Patch(color='red', label='Accepted')
+    blue_data = mpatches.Patch(color='blue', label='Rejected')
+    plt.legend(handles=[red_data, blue_data])
+    plt.title('Exam Scores of Students Applying to University')
+    plt.plot(extractColummnFromMatrix(accepted, 0), extractColummnFromMatrix(accepted, 1), 'ro')
+    plt.plot(extractColummnFromMatrix(rejected, 0), extractColummnFromMatrix(rejected, 1), 'b+')    
+    plt.show()
 
 def main():
     X = []
     y = []
     loadData(X, y, 'data.txt')
+    printArray(y)
     plotData(X, y)
     return;
     

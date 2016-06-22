@@ -6,6 +6,7 @@ Created on Mon Jun 20 20:25:30 2016
 """
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import numpy as np
 
 # Data contains scores of 2 exams and also whether the individual with the score was admitted or not
 
@@ -37,11 +38,9 @@ def plotData(X, y):
             accepted.append([exam1Data[i], exam2Data[i]])
         else:
             rejected.append([exam1Data[i], exam2Data[i]])
-    printArray(accepted)
     plt.xlabel('Exam 1 Score')
     plt.ylabel('Exam 2 Score')
     plt.legend('accepted', 'rejected')
-
     red_data = mpatches.Patch(color='red', label='Accepted')
     blue_data = mpatches.Patch(color='blue', label='Rejected')
     plt.legend(handles=[red_data, blue_data])
@@ -50,12 +49,21 @@ def plotData(X, y):
     plt.plot(extractColummnFromMatrix(rejected, 0), extractColummnFromMatrix(rejected, 1), 'b+')    
     plt.show()
 
+def costFunction(X, y, theta):
+    return;
+
 def main():
     X = []
     y = []
     loadData(X, y, 'data.txt')
-    printArray(y)
     plotData(X, y)
+    # Add intercept data to X
+    X = [[1.0] + x for x in X]
+    theta = np.zeros((len(X[0]), 1))
+    printArray(theta)
+    cost, grad = costFunction(X, y, theta)
+    printArray(cost)
+    printArray(grad)
     return;
     
 if __name__ == "__main__":

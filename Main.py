@@ -53,13 +53,24 @@ def plotData(X, y):
 def sigmoid(z):
     result = -1 * z
     result = [[1.0 / (1.0 + math.exp(x))] for x in result]
-    printArray(result)
     return result
     
 
 def costFunction(X, y, theta):
+    m = len(y)
+    # Splitting up cost calculation to two parts A, B
+    sig = sigmoid(np.dot(X, theta))
+    A = [[math.log(x[0])] for x in sig]
+    A = -1 * np.dot(np.transpose(y), A)
+    sig = [[1 - x[0]] for x in sig]
+    y1 = [[1 - x[0]] for x in y]
+    B = [[math.log(x[0])] for x in sig]
+    B = -1 * np.dot(np.transpose(y1), B)
+    cost = (1.0 / m) * (A + B)
+    printArray(cost)
     
-    return;
+    # Calculation of gradient
+    return (cost, "");
 
 def main():
     X = []
@@ -69,11 +80,9 @@ def main():
     # Add intercept data to X
     X = [[1.0] + x for x in X]
     theta = np.zeros((len(X[0]), 1))
-    printArray(theta)
-#    cost, grad = costFunction(X, y, theta)
-#    printArray(cost)
-#    printArray(grad)
-    sigmoid(np.dot(X, theta))
+    cost, grad = costFunction(X, y, theta)
+    printArray(cost)
+    printArray(grad)
     return;
     
 if __name__ == "__main__":

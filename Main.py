@@ -62,15 +62,17 @@ def costFunction(X, y, theta):
     sig = sigmoid(np.dot(X, theta))
     A = [[math.log(x[0])] for x in sig]
     A = -1 * np.dot(np.transpose(y), A)
-    sig = [[1 - x[0]] for x in sig]
+    sig1 = [[1 - x[0]] for x in sig]
     y1 = [[1 - x[0]] for x in y]
-    B = [[math.log(x[0])] for x in sig]
+    B = [[math.log(x[0])] for x in sig1]
     B = -1 * np.dot(np.transpose(y1), B)
     cost = (1.0 / m) * (A + B)
-    printArray(cost)
     
     # Calculation of gradient
-    return (cost, "");
+    grad = [sig[x][0] - y[x][0] for x in range(len(y))]
+    grad = np.transpose(np.dot(np.transpose(grad), X))
+    grad = (1.00 / m) * grad
+    return (cost, grad);
 
 def main():
     X = []
@@ -81,7 +83,9 @@ def main():
     X = [[1.0] + x for x in X]
     theta = np.zeros((len(X[0]), 1))
     cost, grad = costFunction(X, y, theta)
+    print "cost"
     printArray(cost)
+    print "gradient"
     printArray(grad)
     return;
     

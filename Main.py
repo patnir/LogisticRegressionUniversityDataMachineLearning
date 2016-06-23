@@ -7,6 +7,7 @@ Created on Mon Jun 20 20:25:30 2016
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
+import math
 
 # Data contains scores of 2 exams and also whether the individual with the score was admitted or not
 
@@ -49,7 +50,15 @@ def plotData(X, y):
     plt.plot(extractColummnFromMatrix(rejected, 0), extractColummnFromMatrix(rejected, 1), 'b+')    
     plt.show()
 
+def sigmoid(z):
+    result = -1 * z
+    result = [[1.0 / (1.0 + math.exp(x))] for x in result]
+    printArray(result)
+    return result
+    
+
 def costFunction(X, y, theta):
+    
     return;
 
 def main():
@@ -61,9 +70,10 @@ def main():
     X = [[1.0] + x for x in X]
     theta = np.zeros((len(X[0]), 1))
     printArray(theta)
-    cost, grad = costFunction(X, y, theta)
-    printArray(cost)
-    printArray(grad)
+#    cost, grad = costFunction(X, y, theta)
+#    printArray(cost)
+#    printArray(grad)
+    sigmoid(np.dot(X, theta))
     return;
     
 if __name__ == "__main__":

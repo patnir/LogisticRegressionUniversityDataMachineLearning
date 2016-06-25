@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 import math
+from scipy.optimize import fmin_bfgs  
 
 # Data contains scores of 2 exams and also whether the individual with the score was admitted or not
 
@@ -56,7 +57,7 @@ def sigmoid(z):
     return result
     
 
-def costFunction(X, y, theta):
+def computeCostGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
     sig = sigmoid(np.dot(X, theta))
@@ -72,8 +73,40 @@ def costFunction(X, y, theta):
     grad = [sig[x][0] - y[x][0] for x in range(len(y))]
     grad = np.transpose(np.dot(np.transpose(grad), X))
     grad = (1.00 / m) * grad
-    return (cost, grad);
+    return (cost, grad)
+    
+def computeCost(theta, X, y):
+    m = len(y)
+    # Splitting up cost calculation to two parts A, B
+    sig = sigmoid(np.dot(X, theta))
+    A = [[math.log(x[0])] for x in sig]
+    A = -1 * np.dot(np.transpose(y), A)
+    sig1 = [[1 - x[0]] for x in sig]
+    y1 = [[1 - x[0]] for x in y]
+    B = [[math.log(x[0])] for x in sig1]
+    B = -1 * np.dot(np.transpose(y1), B)
+    cost = (1.0 / m) * (A + B)
+    return cost
+    
+def computeGradient(theta, X, y):
+    m = len(y)
+    # Splitting up cost calculation to two parts A, B
+    sig = sigmoid(np.dot(X, theta))
+    # Calculation of gradient
+    grad = [sig[x][0] - y[x][0] for x in range(len(y))]
+    grad = np.transpose(np.dot(np.transpose(grad), X))
+    grad = (1.00 / m) * grad
+    return grad
 
+
+def optimization(theta, X, y):
+    initial_values = theta
+    myargs = (X, y)
+    theta = fmin_bfgs(computeCost, x0=initial_values, args=myargs)
+    print "theta"    
+    printArray(theta)
+    return 
+    
 def main():
     X = []
     y = []
@@ -82,11 +115,14 @@ def main():
     # Add intercept data to X
     X = [[1.0] + x for x in X]
     theta = np.zeros((len(X[0]), 1))
-    cost, grad = costFunction(X, y, theta)
+    cost = computeCost(theta, X, y)
     print "cost"
     printArray(cost)
-    print "gradient"
+    grad = computeGradient(theta, X, y)
+    print "new gradient"
     printArray(grad)
+    print "optimizing"
+    #optimization(theta, X, y)
     return;
     
 if __name__ == "__main__":

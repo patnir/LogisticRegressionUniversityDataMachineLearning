@@ -60,7 +60,7 @@ def sigmoid(z):
 def computeCostGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(numpy.dot(X, theta))
+    sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
     A = [[math.log(x[0])] for x in sig]
     A = -1 * numpy.dot(numpy.transpose(y), A)
     sig1 = [[1 - x[0]] for x in sig]
@@ -78,12 +78,12 @@ def computeCostGradient(theta, X, y):
 def computeCost(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(numpy.dot(X, theta))   
-    A = [[math.log(x[0])] for x in sig]
+    sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
+    A = [[math.log(x[0] + 1)] for x in sig]
     A = -1 * numpy.dot(numpy.transpose(y), A)
     sig1 = [[1 - x[0]] for x in sig]
     y1 = [[1 - x[0]] for x in y]
-    B = [[math.log(x[0])] for x in sig1]
+    B = [[math.log(x[0] + 1)] for x in sig1]
     B = -1 * numpy.dot(numpy.transpose(y1), B)
     cost = (1.0 / m) * (A + B)
     return cost
@@ -100,7 +100,7 @@ def ComputeCost(theta, X, y):
 def computeGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(numpy.dot(X, theta))
+    sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
     # Calculation of gradient
     grad = [sig[x][0] - y[x][0] for x in range(len(y))]
     grad = numpy.transpose(numpy.dot(numpy.transpose(grad), X))
@@ -119,7 +119,7 @@ def main():
     plotData(X, y)
     # Add intercept data to X
     X = [[1.0] + x for x in X]
-    theta = numpy.zeros((len(X[0]), 1))
+    theta = numpy.zeros((1, 3))
     cost = computeCost(theta, X, y)
     print "cost"
     printArray(cost)

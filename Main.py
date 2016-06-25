@@ -55,7 +55,6 @@ def sigmoid(z):
     result = -1 * z
     result = [[1.0 / (1.0 + math.exp(x))] for x in result]
     return result
-    
 
 def computeCostGradient(theta, X, y):
     m = len(y)
@@ -88,15 +87,6 @@ def computeCost(theta, X, y):
     cost = (1.0 / m) * (A + B)
     return cost
     
-def ComputeCost(theta, X, y):
-    m = float(len(X))
-    predictions = numpy.dot(X, theta)
-    errors_squared = numpy.subtract(predictions, y)
-    #print errors_squared
-    errors_squared = [round(math.pow(x, 2), 5) for x in errors_squared]
-    J = (1.0 / (2.0 * m)) * sum(errors_squared)
-    return J 
-    
 def computeGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
@@ -111,7 +101,39 @@ def computeGradient(theta, X, y):
 def optimization(theta, X, y):
     x0 = theta
     theta = fmin_bfgs(computeCost, x0, fprime=computeGradient, args=(X, y))
+    return theta
     
+def plotDecisionBoundary(theta, X, y):
+    predictions = sigmoid(numpy.dot(X, theta));
+    printArray(predictions)
+    for i in range(len(predictions)):
+        if (predictions[i][0] >= 0.5):
+            predictions[i][0] = 1
+        else:
+            predictions[i][0] = 0
+    printArray(predictions)
+    y = predictions
+    exam1Data = extractColummnFromMatrix(X, 0)
+    exam2Data = extractColummnFromMatrix(X, 1)
+    accepted = []
+    rejected = []
+    for i in range(len(y)):
+        if (y[i][0] == 1):
+            accepted.append([exam1Data[i], exam2Data[i]])
+        else:
+            rejected.append([exam1Data[i], exam2Data[i]])
+    plt.xlabel('Exam 1 Score')
+    plt.ylabel('Exam 2 Score')
+    plt.legend('accepted', 'rejected')
+    red_data = mpatches.Patch(color='red', label='Accepted')
+    blue_data = mpatches.Patch(color='blue', label='Rejected')
+    plt.legend(handles=[red_data, blue_data])
+    plt.title('Exam Scores of Students Applying to University')
+    plt.plot(extractColummnFromMatrix(accepted, 0), extractColummnFromMatrix(accepted, 1), 'ro')
+    plt.plot(extractColummnFromMatrix(rejected, 0), extractColummnFromMatrix(rejected, 1), 'b+')    
+    plt.show()
+    
+
 def main():
     X = []
     y = []
@@ -119,7 +141,7 @@ def main():
     plotData(X, y)
     # Add intercept data to X
     X = [[1.0] + x for x in X]
-    theta = numpy.zeros((1, 3))
+    theta = numpy.zeros((1, len(X[0])))
     cost = computeCost(theta, X, y)
     print "cost"
     printArray(cost)
@@ -127,7 +149,8 @@ def main():
     print "new gradient"
     printArray(grad)
     print "optimizing"
-    optimization(theta, X, y)
+    theta = optimization(theta, X, y) 
+    plotDecisionBoundary(theta, X, y)
     return;
     
 if __name__ == "__main__":

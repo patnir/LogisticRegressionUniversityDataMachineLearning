@@ -6,7 +6,7 @@ Created on Mon Jun 20 20:25:30 2016
 """
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import numpy as np
+import numpy
 import math
 from scipy.optimize import fmin_bfgs  
 
@@ -60,52 +60,57 @@ def sigmoid(z):
 def computeCostGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(np.dot(X, theta))
+    sig = sigmoid(numpy.dot(X, theta))
     A = [[math.log(x[0])] for x in sig]
-    A = -1 * np.dot(np.transpose(y), A)
+    A = -1 * numpy.dot(numpy.transpose(y), A)
     sig1 = [[1 - x[0]] for x in sig]
     y1 = [[1 - x[0]] for x in y]
     B = [[math.log(x[0])] for x in sig1]
-    B = -1 * np.dot(np.transpose(y1), B)
+    B = -1 * numpy.dot(numpy.transpose(y1), B)
     cost = (1.0 / m) * (A + B)
     
     # Calculation of gradient
     grad = [sig[x][0] - y[x][0] for x in range(len(y))]
-    grad = np.transpose(np.dot(np.transpose(grad), X))
+    grad = numpy.transpose(numpy.dot(numpy.transpose(grad), X))
     grad = (1.00 / m) * grad
     return (cost, grad)
     
 def computeCost(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(np.dot(X, theta))
+    sig = sigmoid(numpy.dot(X, theta))   
     A = [[math.log(x[0])] for x in sig]
-    A = -1 * np.dot(np.transpose(y), A)
+    A = -1 * numpy.dot(numpy.transpose(y), A)
     sig1 = [[1 - x[0]] for x in sig]
     y1 = [[1 - x[0]] for x in y]
     B = [[math.log(x[0])] for x in sig1]
-    B = -1 * np.dot(np.transpose(y1), B)
+    B = -1 * numpy.dot(numpy.transpose(y1), B)
     cost = (1.0 / m) * (A + B)
     return cost
+    
+def ComputeCost(theta, X, y):
+    m = float(len(X))
+    predictions = numpy.dot(X, theta)
+    errors_squared = numpy.subtract(predictions, y)
+    #print errors_squared
+    errors_squared = [round(math.pow(x, 2), 5) for x in errors_squared]
+    J = (1.0 / (2.0 * m)) * sum(errors_squared)
+    return J 
     
 def computeGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
-    sig = sigmoid(np.dot(X, theta))
+    sig = sigmoid(numpy.dot(X, theta))
     # Calculation of gradient
     grad = [sig[x][0] - y[x][0] for x in range(len(y))]
-    grad = np.transpose(np.dot(np.transpose(grad), X))
+    grad = numpy.transpose(numpy.dot(numpy.transpose(grad), X))
     grad = (1.00 / m) * grad
     return grad
 
 
 def optimization(theta, X, y):
-    initial_values = theta
-    myargs = (X, y)
-    theta = fmin_bfgs(computeCost, x0=initial_values, args=myargs)
-    print "theta"    
-    printArray(theta)
-    return 
+    x0 = theta
+    theta = fmin_bfgs(computeCost, x0, fprime=computeGradient, args=(X, y))
     
 def main():
     X = []
@@ -114,7 +119,7 @@ def main():
     plotData(X, y)
     # Add intercept data to X
     X = [[1.0] + x for x in X]
-    theta = np.zeros((len(X[0]), 1))
+    theta = numpy.zeros((len(X[0]), 1))
     cost = computeCost(theta, X, y)
     print "cost"
     printArray(cost)
@@ -122,7 +127,7 @@ def main():
     print "new gradient"
     printArray(grad)
     print "optimizing"
-    #optimization(theta, X, y)
+    optimization(theta, X, y)
     return;
     
 if __name__ == "__main__":

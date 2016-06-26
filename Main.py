@@ -52,7 +52,7 @@ def plotData(X, y):
     plt.show()
 
 def sigmoid(z):
-    result = -1 * z
+    result = -1.0 * z
     result = [[1.0 / (1.0 + math.exp(x))] for x in result]
     return result
 
@@ -78,10 +78,12 @@ def computeCost(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
     sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
+    printArray(sig)
+    # shifting values the the sigmoid function to ensure there is no log(0)
     A = [[math.log(x[0] + 1)] for x in sig]
     A = -1 * numpy.dot(numpy.transpose(y), A)
-    sig1 = [[1 - x[0]] for x in sig]
-    y1 = [[1 - x[0]] for x in y]
+    sig1 = [[1.0 - x[0]] for x in sig]
+    y1 = [[1.0 - x[0]] for x in y]
     B = [[math.log(x[0] + 1)] for x in sig1]
     B = -1 * numpy.dot(numpy.transpose(y1), B)
     cost = (1.0 / m) * (A + B)
@@ -105,7 +107,7 @@ def optimization(theta, X, y):
     
 
 def predict(theta, X):
-    predictions = sigmoid(numpy.dot(X, theta));
+    predictions = sigmoid(numpy.dot(X, numpy.transpose(theta)));
     for i in range(len(predictions)):
         if (predictions[i][0] >= 0.5):
             predictions[i][0] = 1
@@ -149,25 +151,23 @@ def plotDecisionBoundary(theta, X, y):
     plt.plot(xData, yData, 'g-') 
     plt.show()
 
+def testing(X, y):
+    theta = numpy.zeros((1, len(X[0])))
+    
+
 def main():
     X = []
     y = []
     loadData(X, y, 'data.txt')
     plotData(X, y)
-    print max(extractColummnFromMatrix(X, 0)) + 2
     # Add intercept data to X
     X = [[1.0] + x for x in X]
     theta = numpy.zeros((1, len(X[0])))
-#    cost = computeCost(theta, X, y)
-#    print "cost"
-#    printArray(cost)
-#    grad = computeGradient(theta, X, y)
-#    print "new gradient"
-#    printArray(grad)
     theta = optimization(theta, X, y) 
     printArray(theta)
     accuracy(theta, X, y)
     plotDecisionBoundary(theta, X, y)
+    testing(X, y)
     return;
     
 if __name__ == "__main__":

@@ -60,6 +60,7 @@ def computeCostGradient(theta, X, y):
     m = len(y)
     # Splitting up cost calculation to two parts A, B
     sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
+    numpy.size(sig)
     A = [[math.log(x[0])] for x in sig]
     A = -1 * numpy.dot(numpy.transpose(y), A)
     sig1 = [[1 - x[0]] for x in sig]
@@ -79,9 +80,11 @@ def computeCost(theta, X, y):
     # Splitting up cost calculation to two parts A, B
     sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
     printArray(sig)
+    print numpy.size(sig)
     # shifting values the the sigmoid function to ensure there is no log(0)
     A = [[math.log(x[0] + 1)] for x in sig]
     A = -1 * numpy.dot(numpy.transpose(y), A)
+    sig1 = []
     sig1 = [[1.0 - x[0]] for x in sig]
     y1 = [[1.0 - x[0]] for x in y]
     B = [[math.log(x[0] + 1)] for x in sig1]
@@ -153,7 +156,11 @@ def plotDecisionBoundary(theta, X, y):
 
 def testing(X, y):
     theta = numpy.zeros((1, len(X[0])))
-    
+    sig = sigmoid(numpy.dot(X, numpy.transpose(theta)))
+    print numpy.size(sig)
+    sig1 = []
+    sig1 = [[1.0 - x[0]] for x in sig]
+    printArray(sig1)
 
 def main():
     X = []

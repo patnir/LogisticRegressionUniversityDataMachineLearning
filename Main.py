@@ -103,7 +103,8 @@ def optimization(theta, X, y):
     theta = fmin_bfgs(computeCost, x0, fprime=computeGradient, args=(X, y))
     return theta
     
-def plotDecisionBoundary(theta, X, y):
+
+def predict(theta, X):
     predictions = sigmoid(numpy.dot(X, theta));
     printArray(predictions)
     for i in range(len(predictions)):
@@ -111,27 +112,17 @@ def plotDecisionBoundary(theta, X, y):
             predictions[i][0] = 1
         else:
             predictions[i][0] = 0
+    return predictions
+    
+def accuracy(theta, X, y):
+    predictions = predict(theta, X)
     printArray(predictions)
-    y = predictions
-    exam1Data = extractColummnFromMatrix(X, 0)
-    exam2Data = extractColummnFromMatrix(X, 1)
-    accepted = []
-    rejected = []
-    for i in range(len(y)):
-        if (y[i][0] == 1):
-            accepted.append([exam1Data[i], exam2Data[i]])
-        else:
-            rejected.append([exam1Data[i], exam2Data[i]])
-    plt.xlabel('Exam 1 Score')
-    plt.ylabel('Exam 2 Score')
-    plt.legend('accepted', 'rejected')
-    red_data = mpatches.Patch(color='red', label='Accepted')
-    blue_data = mpatches.Patch(color='blue', label='Rejected')
-    plt.legend(handles=[red_data, blue_data])
-    plt.title('Exam Scores of Students Applying to University')
-    plt.plot(extractColummnFromMatrix(accepted, 0), extractColummnFromMatrix(accepted, 1), 'ro')
-    plt.plot(extractColummnFromMatrix(rejected, 0), extractColummnFromMatrix(rejected, 1), 'b+')    
-    plt.show()
+    correct = 0
+    for i in range(len(predictions)):
+        if (predictions[i][0] == y[i][0]):
+            correct += 1.0
+    print correct / len(y) * 100, "% correctly predicted" 
+    
     
 
 def main():
@@ -150,7 +141,7 @@ def main():
     printArray(grad)
     print "optimizing"
     theta = optimization(theta, X, y) 
-    plotDecisionBoundary(theta, X, y)
+    accuracy(theta, X, y)
     return;
     
 if __name__ == "__main__":
